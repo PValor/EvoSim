@@ -3,7 +3,7 @@ import params
 
 
 class Joint:
-    def __init__(self, f_x, f_y):
+    def __init__(self, f_x, f_y, color):
         self.x = f_x
         self.y = f_y
 
@@ -13,9 +13,23 @@ class Joint:
         self.velocity_x = 0
         self.velocity_y = 0
 
+        self.co_joints = []
+
+        self.color = color
+
+    def add_co_joint(self, f_joint):
+        self.co_joints.append(f_joint)
+
     def apply_force(self, f_force_x, f_force_y):
-        self.velocity_x += f_force_x
-        self.velocity_y += f_force_y
+        self.velocity_x += f_force_x/10
+        self.velocity_y += f_force_y/10
+
+        for joint in self.co_joints:
+            joint.apply_transmitted_force(-f_force_x, -f_force_y)
+
+    def apply_transmitted_force(self, f_force_x, f_force_y):
+        self.velocity_x += f_force_x/10
+        self.velocity_y += f_force_y/10
 
     def update_position(self):
 
@@ -34,13 +48,16 @@ class Arm:
         self.joint1 = f_joint1
         self.joint2 = f_joint2
 
+        self.joint1.add_co_joint(self.joint2)
+        self.joint2.add_co_joint(self.joint1)
+
         self.length = math.sqrt((self.joint1.x-self.joint2.x)**2+(self.joint1.y-self.joint2.y)**2)
 
     def transmit_force(self):
         self.length = math.sqrt((self.joint1.x-self.joint2.x)**2+(self.joint1.y-self.joint2.y)**2)
 
         if self.length != params.ARM_LENGTH:
-            compression_force = (params.ARM_LENGTH - self.length)
+            compression_force = (params.ARM_LENGTH - self.length)/2
 
             force_x = 0
             force_y = 0

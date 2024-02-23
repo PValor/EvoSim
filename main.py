@@ -11,26 +11,23 @@ def on_closing():
 
 
 def forces_scenario():
+
     time.sleep(2)
 
-    joint_2.apply_force(0, 30)
+    joint_2.apply_force(8, -6)
+    joint_3.apply_force(8, 6)
 
-    time.sleep(3)
-
-    joint_4.apply_force(-30, -20)
 
 kill_event = threading.Event()
 
-joint_1 = Joint(0, 0)
-joint_2 = Joint(50, 0)
-joint_3 = Joint(100, 0)
-joint_4 = Joint(100, 50)
+joint_2 = Joint(f_x=0,   f_y=80,  color="blue")
+joint_1 = Joint(f_x=-60, f_y=0,   color="red")
+joint_3 = Joint(f_x=0,   f_y=-80, color="magenta")
 
 arm_1 = Arm(f_joint1=joint_1, f_joint2=joint_2)
-arm_2 = Arm(f_joint1=joint_2, f_joint2=joint_3)
-arm_3 = Arm(f_joint1=joint_3, f_joint2=joint_4)
+arm_2 = Arm(f_joint1=joint_1, f_joint2=joint_3)
 
-test_obj = Object([joint_1,joint_2, joint_3, joint_4], [arm_1, arm_2, arm_3])
+test_obj = Object([joint_1, joint_2, joint_3], [arm_1, arm_2])
 
 data = ObjectData(kill_event, [test_obj], f_timestep=params.TIME_RESOLUTION)
 

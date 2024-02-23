@@ -33,6 +33,7 @@ class Display(tk.Frame):
             self.draw_objects()
             time.sleep(self.timestep)
         self.event_generate("<<ThreadFinished>>")
+        print("Display exit")
 
     def destroy_window(self):
         self.root.destroy()
@@ -55,6 +56,6 @@ class Display(tk.Frame):
                                                    params.DISPLAY_Y_CENTER-params.JOINT_RADIUS - joint.y,
                                                    params.DISPLAY_X_CENTER+params.JOINT_RADIUS + joint.x,
                                                    params.DISPLAY_Y_CENTER+params.JOINT_RADIUS - joint.y,
-                                                   fill="red")
+                                                   fill=joint.color)
 
 

@@ -29,4 +29,5 @@ class ObjectData:
                 for joint in obj.joint_list:
                     joint.update_position()
 
-            time.sleep(self.timestep)
+            time.sleep(self.timestep/20)
+    print("Data exit")
