@@ -1,4 +1,6 @@
 import math
+import params
+
 
 class Joint:
     def __init__(self, f_x, f_y):
@@ -23,8 +25,8 @@ class Joint:
         self.x += self.velocity_x
         self.y += self.velocity_y
 
-        self.velocity_x *= 0.99
-        self.velocity_y *= 0.99
+        self.velocity_x *= params.FRICTION_COEFF
+        self.velocity_y *= params.FRICTION_COEFF
 
 
 class Arm:
@@ -36,22 +38,37 @@ class Arm:
 
     def transmit_force(self):
         self.length = math.sqrt((self.joint1.x-self.joint2.x)**2+(self.joint1.y-self.joint2.y)**2)
-        print(f"Length = {self.length}")
 
-        if self.length < 48 or self.length > 52:
-            compression_force = abs(50 - self.length)
+        if self.length != params.ARM_LENGTH:
+            compression_force = (params.ARM_LENGTH - self.length)
 
-            force_x = compression_force*50/self.length #cos alpha FAUX
+            force_x = 0
+            force_y = 0
 
-            force_y = compression_force*math.sqrt(1-(50/self.length)*(50/self.length)) #sin alpha FAUX
-            print(f"Force x = {force_y}")
+            if self.joint2.x-self.joint1.x == 0:
+                force_y = compression_force
+            elif self.joint2.y-self.joint1.y == 0:
+                force_x = compression_force
+            else:
+                slope = (self.joint2.y-self.joint1.y)/(self.joint2.x-self.joint1.x)
+                force_x = compression_force/math.sqrt(1+abs(slope))
+                force_y = compression_force/math.sqrt(1+abs(1/slope))
 
-            # Si plus on soustrait si plus grand on ajoute
-            self.joint1.apply_force(force_x, force_y)
-            self.joint2.apply_force(-force_x, -force_y)
+            if self.joint2.x > self.joint1.x:
+                j1_f_x = -force_x
+                j2_f_x = force_x
+            else:
+                j1_f_x = force_x
+                j2_f_x = -force_x
+            if self.joint2.y > self.joint1.y:
+                j1_f_y = -force_y
+                j2_f_y = force_y
+            else:
+                j1_f_y = force_y
+                j2_f_y = -force_y
 
-
-
+            self.joint1.apply_force(j1_f_x, j1_f_y)
+            self.joint2.apply_force(j2_f_x, j2_f_y)
 
 
 class Object:

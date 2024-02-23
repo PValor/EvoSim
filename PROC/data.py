@@ -1,6 +1,4 @@
 import time
-
-from PROC.object import Object
 import threading
 
 
@@ -26,8 +24,9 @@ class ObjectData:
     def update_object_data(self):
         while not self.kill_event.isSet():
             for obj in self.object_list:
-                for joint in obj.joint_list:
-                    joint.update_position()
                 for arm in obj.arm_list:
                     arm.transmit_force()
+                for joint in obj.joint_list:
+                    joint.update_position()
+
             time.sleep(self.timestep)

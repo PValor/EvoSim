@@ -1,0 +1,16 @@
+# Physical model parameters
+FRICTION_COEFF = 0.96
+ARM_LENGTH = 50
+
+# Simulation parameters
+TIME_RESOLUTION = 0.02
+
+# Graphical parameters
+DISPLAY_HEIGHT = 800
+DISPLAY_WIDTH  = 800
+
+DISPLAY_X_CENTER = 400
+DISPLAY_Y_CENTER = 400
+
+ARM_WIDTH = 2
+JOINT_RADIUS = 4
