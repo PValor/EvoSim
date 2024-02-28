@@ -5,7 +5,7 @@ import params
 
 
 class Display(tk.Frame):
-    def __init__(self, f_root, f_ref_data, f_kill_event, f_timestep):
+    def __init__(self, f_root, f_ref_data, f_kill_event):
         super().__init__(f_root)
 
         self.root = f_root
@@ -22,7 +22,7 @@ class Display(tk.Frame):
 
         self.update_thread = threading.Thread(target=lambda: self.update_display())
 
-        self.timestep = f_timestep
+        self.timestep = params.TIME_RESOLUTION
 
         self.pack()
         self.update_thread.start()

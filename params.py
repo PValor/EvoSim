@@ -1,9 +1,16 @@
+# Simulation parameters
+# TIME_RESOLUTION = 1
+TIME_RESOLUTION = 0.03
+
 # Physical model parameters
 FRICTION_COEFF = 0.988
 ARM_LENGTH = 100
+DT = TIME_RESOLUTION/20
 
-# Simulation parameters
-TIME_RESOLUTION = 0.03
+KP = 0.002
+KI = 0.001
+KD = 0.0005
+
 
 # Graphical parameters
 DISPLAY_HEIGHT = 800
