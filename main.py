@@ -12,10 +12,10 @@ def on_closing():
 
 
 def forces_scenario():
-    time.sleep(4)
+    time.sleep(2)
 
     print("launch command")
-    pivot.start_angle_command(math.pi/4)
+    pivot.start_angle_command(math.pi/2.2)
 
 
 kill_event = threading.Event()
@@ -24,12 +24,12 @@ joint_pivot = Joint(f_x=0,
                     f_y=0,
                     color="blue")
 
-joint_1 = Joint(f_x=-71,
-                f_y=71,
-                color="red")
+joint_1 = Joint(f_x=0,
+                f_y=100,
+                color="green")
 
-joint_2 = Joint(f_x=71,
-                f_y=71,
+joint_2 = Joint(f_x=0,
+                f_y=100,
                 color="red")
 
 pivot = Articulation(joint_pivot, joint_1, joint_2)
