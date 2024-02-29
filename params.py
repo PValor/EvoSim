@@ -5,11 +5,15 @@ TIME_RESOLUTION = 0.03
 # Physical model parameters
 FRICTION_COEFF = 0.988
 ARM_LENGTH = 100
-DT = TIME_RESOLUTION/60
+DT = TIME_RESOLUTION/80
 
-KP = 0.014
-KI = 0.01
-KD = 0.000006
+# KP = 0.014
+# KI = 0.01
+# KD = 0.000006
+
+KP = 0.052
+KI = 0.04
+KD = 0.000024
 
 
 # Graphical parameters

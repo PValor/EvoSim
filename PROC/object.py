@@ -1,6 +1,8 @@
 import math
 import params
 
+def dist(joint_1, joint_2):
+    return (math.sqrt((joint_2.y - joint_1.y)**2+(joint_2.x - joint_1.x)**2))
 
 class Joint:
     def __init__(self, f_x, f_y, color):
@@ -43,10 +45,11 @@ class Joint:
         self.velocity_y *= params.FRICTION_COEFF
 
 class Articulation():
-    def __init__(self, f_pivot_joint:Joint, f_joint1:Joint, f_joint2:Joint):
+    def __init__(self, f_pivot_joint:Joint, f_joint1:Joint, f_joint2:Joint, f_speed):
         self.pivot = f_pivot_joint
         self.joint1 = f_joint1
         self.joint2 = f_joint2
+        self.speed = f_speed
 
         if self.joint1.x == self.pivot.x:
             a_p1 = 10000
@@ -61,10 +64,11 @@ class Articulation():
             self.angle_command = math.copysign(math.pi/2, a_p2)
         else :
             self.angle_command = math.atan(abs((a_p2 - a_p1)/(1+a_p1*a_p2)))
+            if dist(self.joint1, self.joint2) > params.ARM_LENGTH*math.sqrt(2):
+                self.angle_command = math.pi - self.angle_command
 
         self.integrated_err = 0
         self.previous_err = 0
-        self.max_err = 0
 
     def start_angle_command(self, f_angle):
         if f_angle != self.angle_command:
@@ -86,6 +90,8 @@ class Articulation():
             current_angle = math.copysign(math.pi/2, a_p2)
         else :
             current_angle = math.atan(abs((a_p2 - a_p1)/(1+a_p1*a_p2)))
+            if dist(self.joint1, self.joint2) > params.ARM_LENGTH*math.sqrt(2):
+                current_angle = math.pi - current_angle
 
         err = current_angle - self.angle_command
 
@@ -98,16 +104,13 @@ class Articulation():
             # Proportionnal
             prop_f = params.KP * err
             corrective_force = prop_f
-            print("Proportionnal part = ", corrective_force)
             # Integrative
 
             int_f = params.KI * self.integrated_err * params.DT
             corrective_force += int_f
-            print("Integrative part = ", int_f)
             # Derivative
             der_f = params.KD * (self.previous_err - err)/params.DT
             corrective_force += der_f
-            print("Derivative part = ", der_f, "\n")
 
             corrective_force /= 2
 
@@ -132,13 +135,8 @@ class Articulation():
             cf2_x *= math.copysign(1, a_p2)*math.copysign(1, self.joint2.x-self.pivot.x)*math.copysign(1, err)*math.copysign(1, current_angle)*(-1)
             cf2_y *= math.copysign(1, a_p2)*math.copysign(1, self.joint2.y-self.pivot.y)*math.copysign(1, err)*math.copysign(1, current_angle)
 
-            self.joint1.apply_force(cf1_x, cf1_y)
-            self.joint2.apply_force(cf2_x, cf2_y)
-
-            if err > self.max_err:
-                self.max_err = err
-        else :
-            print("max err = ", self.max_err*180/math.pi)
+            self.joint1.apply_force(cf1_x*self.speed, cf1_y*self.speed)
+            self.joint2.apply_force(cf2_x*self.speed, cf2_y*self.speed)
 
 
 class Arm:
