@@ -57,5 +57,3 @@ class Display(tk.Frame):
                                                    params.DISPLAY_X_CENTER+params.JOINT_RADIUS + joint.x,
                                                    params.DISPLAY_Y_CENTER+params.JOINT_RADIUS - joint.y,
                                                    fill=joint.color)
-
-
